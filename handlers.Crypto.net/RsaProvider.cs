@@ -1,64 +1,103 @@
 ﻿using Synapse.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+
+using Zephyr.Crypto;
 
 public class RsaProvider : CryptoRuntimeBase
 {
+    IRsaConfig _config = null;
     public override ICryptoRuntime Initialize(string config)
     {
-        return base.Initialize( config );
+        _config = DeserializeOrDefault<RsaConfigInfoFile>( config );
+        if( _config == null )
+            throw new Exception( "Could not deserialize config." );
+
+        return this;
     }
 
     public override ExecuteResult Encrypt(CryptoStartInfo startInfo)
     {
         try
         {
-            ParameterInfo parms = DeserializeOrNew<ParameterInfo>( startInfo.Parameters );
+            CryptoParameters parms = DeserializeOrNew<CryptoParameters>( startInfo.Parameters );
 
+            string value = _config is RsaConfigInfoFile ?
+                RsaHelpers.EncryptFromFileKeys( ((RsaConfigInfoFile)_config).Uri, parms.Value, _config.CspFlags ) :
+                RsaHelpers.EncryptFromContainerKeys( ((RsaConfigInfoContainer)_config).ContainerName, parms.Value, _config.CspFlags );
 
-            string message = "foo"; // $"SecurityContext: {parms.SecureUserName.ToUnsecureString()}, IsImpersonating: {_identity.IsImpersonating}";
-            OnLogMessage( "Logon", message );
-            return new ExecuteResult() { Status = StatusType.Success, Message = message };
+            return new ExecuteResult() { Status = StatusType.Success, ExitData = value };
         }
         catch( Exception ex )
         {
-            OnLogMessage( "Logon", ex.Message, ex: ex );
+            OnLogMessage( "Encrypt", ex.Message, ex: ex );
             return new ExecuteResult() { Status = StatusType.Failed, Message = ex.Message };
         }
     }
 
     public override ExecuteResult Decrypt(CryptoStartInfo startInfo)
     {
-        throw new NotImplementedException();
+        try
+        {
+            CryptoParameters parms = DeserializeOrNew<CryptoParameters>( startInfo.Parameters );
+
+            string value = _config is RsaConfigInfoFile ?
+                RsaHelpers.DecryptFromFileKeys( ((RsaConfigInfoFile)_config).Uri, parms.Value, _config.CspFlags ) :
+                RsaHelpers.DecryptFromContainerKeys( ((RsaConfigInfoContainer)_config).ContainerName, parms.Value, _config.CspFlags );
+
+            return new ExecuteResult() { Status = StatusType.Success, ExitData = value };
+        }
+        catch( Exception ex )
+        {
+            OnLogMessage( "Decrypt", ex.Message, ex: ex );
+            return new ExecuteResult() { Status = StatusType.Failed, Message = ex.Message };
+        }
     }
 
     public override object GetConfigInstance()
     {
-        return null;
+        return new Dictionary<string, IRsaConfig>
+        {
+            {
+                "File", new RsaConfigInfoFile
+                {
+                    Uri = "Filepath to RSA key file; http support in future.",
+                    CspFlags = CspProviderFlags.NoFlags
+                }
+            },
+            {
+                "Container", new RsaConfigInfoContainer
+                {
+                    ContainerName = "RSA-supported container name.",
+                    CspFlags = CspProviderFlags.NoFlags
+                }
+            }
+        };
     }
 
     public override object GetParametersInstance()
     {
-        return new ParameterInfo
+        return new CryptoParameters
         {
             Value = "value to encrypt/decrypt"
         };
     }
 }
 
+public interface IRsaConfig
+{
+    CspProviderFlags CspFlags { get; set; }
+}
 
-public class RsaConfigInfo
+public class RsaConfigInfoFile : IRsaConfig
 {
     public string Uri { get; set; }
-    public string ContainerName { get; set; }
     public CspProviderFlags CspFlags { get; set; } = CspProviderFlags.NoFlags;
 }
 
-public class ParameterInfo
+public class RsaConfigInfoContainer : IRsaConfig
 {
-    public string Value { get; set; }
+    public string ContainerName { get; set; }
+    public CspProviderFlags CspFlags { get; set; } = CspProviderFlags.NoFlags;
 }
