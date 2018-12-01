@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "handlers.Crypto.net", "handlers.Crypto.net\handlers.Crypto.net.csproj", "{75803190-945D-4F64-BF61-0DC7C7B4AC9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{EA9093E7-2B28-4C17-8B6D-8A7BACC9F046}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\AssemblyInfo.xml = scripts\AssemblyInfo.xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75803190-945D-4F64-BF61-0DC7C7B4AC9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75803190-945D-4F64-BF61-0DC7C7B4AC9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75803190-945D-4F64-BF61-0DC7C7B4AC9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75803190-945D-4F64-BF61-0DC7C7B4AC9C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1CE181C-1552-4DBF-B482-E439428DB2DF}
+	EndGlobalSection
+EndGlobal
