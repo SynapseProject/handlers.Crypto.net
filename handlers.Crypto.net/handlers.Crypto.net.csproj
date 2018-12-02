@@ -46,7 +46,7 @@
       <HintPath>..\packages\YamlDotNet.Signed.5.2.1\lib\net45\YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Zephyr.Crypto, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zephyr.Crypto.1.0.18146\lib\net45\Zephyr.Crypto.dll</HintPath>
+      <HintPath>..\packages\Zephyr.Crypto.1.0.18336\lib\net45\Zephyr.Crypto.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

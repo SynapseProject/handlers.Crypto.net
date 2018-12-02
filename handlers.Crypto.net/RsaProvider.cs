@@ -1,16 +1,23 @@
-﻿using Synapse.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
+using Synapse.Core;
+
 using Zephyr.Crypto;
+
 
 public class RsaProvider : CryptoRuntimeBase
 {
     IRsaConfig _config = null;
     public override ICryptoRuntime Initialize(string config)
     {
-        _config = DeserializeOrDefault<RsaConfigInfoFile>( config );
+        //todo: this is a junky way to do this
+        if( config.Contains( "Uri: " ) )
+            _config = DeserializeOrDefault<RsaConfigInfoFile>( config );
+        else
+            _config = DeserializeOrDefault<RsaConfigInfoContainer>( config );
+
         if( _config == null )
             throw new Exception( "Could not deserialize config." );
 
